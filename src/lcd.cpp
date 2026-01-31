@@ -85,8 +85,14 @@ void lcd_task(void *pvParameters)
   logprintln("lcd_task START!!");
   delay(100); // 各タスク起動待ち
 
+  // Task WDTに登録
+  watchdog_subscribe_task("LCD_TASK");
+
   while (1)
   {
+    // WDTリセット（ループの最初で実行）
+    watchdog_reset();
+
     // 画面タッチ有無確認
     uint16_t tX, tY;
     bool touched = lcd.getTouch(&tX, &tY);

@@ -14,33 +14,48 @@ void udpServer_task(void *pvParameters)
   logprintln("udpServer_task START!!");
   delay(100); // 各タスク起動待ち
 
+  watchdog_subscribe_task("UDPSERVER_TASK"); // 名前を修正
+
+  bool isUdpRunning = false;
+
   while (1)
   {
+    watchdog_reset();
+
     if (WiFi.status() == WL_CONNECTED)
     {
-      udp.begin(localPort);
-      break;
+      if (!isUdpRunning)
+      {
+        // 接続された、かつUDPがまだ動いていない時だけbeginする
+        if (udp.begin(localPort))
+        {
+          logprintln("UDP Server started on port " + String(localPort));
+          isUdpRunning = true;
+        }
+      }
+
+      // UDP受信処理
+      int packetSize = udp.parsePacket();
+      if (packetSize)
+      {
+        memset(pBuffer, 0x00, 256);
+        udp.read(pBuffer, 256);
+        memcpy(&r_dState, &pBuffer[0], sizeof(SRData));
+      }
     }
     else
     {
-      delay(100);
-      continue;
+      // WiFiが切れたら、次に繋がった時に再開できるようにフラグを下ろす
+      if (isUdpRunning)
+      {
+        logprintln("WiFi disconnected, UDP Server stopped.");
+        udp.stop(); // 明示的に止める
+        isUdpRunning = false;
+      }
     }
-  }
 
-  while (1)
-  {
-    int packetSize = udp.parsePacket();
-    if (packetSize)
-    {
-      memset(pBuffer, 0x00, 256);
-      udp.read(pBuffer, 256);
-      memcpy(&r_dState, &pBuffer[0], sizeof(SRData));
-    }
     delay(100);
   }
-
-  vTaskDelete(NULL);
 }
 
 // 動作モード送信処理
