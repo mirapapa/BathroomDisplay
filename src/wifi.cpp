@@ -17,13 +17,23 @@ int wifisetup()
 {
   logprintln("WiFi Connecting to " + String(ssid));
 
+  // 1. 念のため一度切断し、STAモードを明示
+  WiFi.disconnect(true);
+  vTaskDelay(pdMS_TO_TICKS(100));
+  WiFi.mode(WIFI_STA);
+
+  // 2. 固定IPの設定
   if (!WiFi.config(ip, gateway, subnet, dns1))
   {
     logprintln("Failed to WIFI configure!");
     return 0;
   }
 
+  // 3. 接続開始
   WiFi.begin(ssid, pass);
+
+  // 4. 【重要】WiFiの省電力モードを無効化
+  WiFi.setSleep(false);
 
   // 接続完了待機（最大10秒）
   int retry = 0;

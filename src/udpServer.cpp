@@ -33,7 +33,7 @@ void udpServer_task(void *pvParameters)
     int packetSize = udp.parsePacket();
     if (packetSize)
     {
-      memset(pBuffer, 256, 0x00);
+      memset(pBuffer, 0x00, 256);
       udp.read(pBuffer, 256);
       memcpy(&r_dState, &pBuffer[0], sizeof(SRData));
     }
