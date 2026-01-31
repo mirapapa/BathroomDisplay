@@ -2,7 +2,6 @@
 
 // #define DEBUG
 TaskHandle_t thp[3];
-const VERSION version = {'V', 1, 1, 0};
 
 void setup()
 {
@@ -15,13 +14,10 @@ void setup()
   lcd_setup();
 
   logprintln(F(""));
-  logprintln(F("******************************"));
-  logprintln(F("** 浴室自動換気表示システム **"));
-  logprintln("**             (ver" +
-             String(version.verMejor) + "." +
-             String(version.verMinor) + "." +
-             String(version.verPatch) + ")   **");
-  logprintln(F("******************************"));
+  logprintln("***********************************");
+  logprintln("** " SYSTEM_NAME "    **");
+  logprintln("**   (ver" SYSTEM_VERSION ")                  **");
+  logprintln("***********************************");
 #ifdef CONFIG_APP_ROLLBACK_ENABLE
   logprintln(F("CONFIG_APP_ROLLBACK_ENABLE"));
 #endif // CONFIG_APP_ROLLBACK_ENABLE

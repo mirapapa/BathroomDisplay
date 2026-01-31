@@ -58,7 +58,12 @@ void lcd_setup(void)
   memset(&pre_dState, 0x01, sizeof(DState));
   memset(&r_dState, 0x00, sizeof(SRData));
   memset(&s_dState, 0x00, sizeof(SRData));
-  memcpy(&s_dState, &version, sizeof(VERSION));
+  // バージョン情報設定
+  s_dState.version.id = 'V';
+  sscanf(SYSTEM_VERSION, "%hhu.%hhu.%hhu",
+         &s_dState.version.verMejor,
+         &s_dState.version.verMinor,
+         &s_dState.version.verPatch);
 
   lcd.init();
   lcd.setRotation(2);

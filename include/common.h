@@ -11,6 +11,9 @@
 #include <LiquidCrystal_I2C.h>
 #include <ESPmDNS.h>
 
+#define SYSTEM_NAME "浴室自動換気表示システム"
+#define SYSTEM_VERSION "1.1.0"
+
 // --- 構造体の定義 ---
 typedef struct version
 {
